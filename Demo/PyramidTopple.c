@@ -19,17 +19,13 @@
  * SOFTWARE.
  */
  
-#include "chipmunk.h"
+#include "chipmunk/chipmunk.h"
 #include "ChipmunkDemo.h"
 
 static void
-update(cpSpace *space)
+update(cpSpace *space, double dt)
 {
-	int steps = 3;
-	cpFloat dt = 1.0f/60.0f/(cpFloat)steps;
-	
-	for(int i=0; i<steps; i++)
-		cpSpaceStep(space, dt);
+	cpSpaceStep(space, dt);
 }
 
 #define WIDTH 4.0f
@@ -39,12 +35,13 @@ static void
 add_domino(cpSpace *space, cpVect pos, cpBool flipped)
 {
 	cpFloat mass = 1.0f;
+	cpFloat radius = 0.5f;
 	cpFloat moment = cpMomentForBox(mass, WIDTH, HEIGHT);
 	
 	cpBody *body = cpSpaceAddBody(space, cpBodyNew(mass, moment));
-	cpBodySetPos(body, pos);
+	cpBodySetPosition(body, pos);
 
-	cpShape *shape = (flipped ? cpBoxShapeNew(body, HEIGHT, WIDTH) : cpBoxShapeNew(body, WIDTH, HEIGHT));
+	cpShape *shape = (flipped ? cpBoxShapeNew(body, HEIGHT, WIDTH, 0.0) : cpBoxShapeNew(body, WIDTH - radius*2.0f, HEIGHT, radius));
 	cpSpaceAddShape(space, shape);
 	cpShapeSetElasticity(shape, 0.0f);
 	cpShapeSetFriction(shape, 0.6f);
@@ -63,7 +60,7 @@ init(void)
 	cpShape *shape = cpSpaceAddShape(space, cpSegmentShapeNew(cpSpaceGetStaticBody(space), cpv(-600,-240), cpv(600,-240), 0.0f));
 	cpShapeSetElasticity(shape, 1.0f);
 	cpShapeSetFriction(shape, 1.0f);
-	cpShapeSetLayers(shape, NOT_GRABABLE_MASK);
+	cpShapeSetFilter(shape, NOT_GRABBABLE_FILTER);
 	
 	
 	// Add the dominoes.
@@ -98,6 +95,7 @@ destroy(cpSpace *space)
 
 ChipmunkDemo PyramidTopple = {
 	"Pyramid Topple",
+	1.0/180.0,
 	init,
 	update,
 	ChipmunkDemoDefaultDrawImpl,

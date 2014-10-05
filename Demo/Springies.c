@@ -21,7 +21,7 @@
  
 #include <string.h>
 
-#include "chipmunk.h"
+#include "chipmunk/chipmunk.h"
 #include "ChipmunkDemo.h"
 
 static cpFloat
@@ -32,23 +32,18 @@ springForce(cpConstraint *spring, cpFloat dist)
 }
 
 static cpConstraint *
-new_spring(cpBody *a, cpBody *b, cpVect anchr1, cpVect anchr2, cpFloat restLength, cpFloat stiff, cpFloat damp)
+new_spring(cpBody *a, cpBody *b, cpVect anchorA, cpVect anchorB, cpFloat restLength, cpFloat stiff, cpFloat damp)
 {
-	cpConstraint *spring = cpDampedSpringNew(a, b, anchr1, anchr2, restLength, stiff, damp);
+	cpConstraint *spring = cpDampedSpringNew(a, b, anchorA, anchorB, restLength, stiff, damp);
 	cpDampedSpringSetSpringForceFunc(spring, springForce);
 	
 	return spring;
 }
 
 static void
-update(cpSpace *space)
+update(cpSpace *space, double dt)
 {
-	int steps = 1;
-	cpFloat dt = 1.0f/60.0f/(cpFloat)steps;
-	
-	for(int i=0; i<steps; i++){
-		cpSpaceStep(space, dt);
-	}
+	cpSpaceStep(space, dt);
 }
 
 static cpBody *
@@ -59,10 +54,10 @@ add_bar(cpSpace *space, cpVect a, cpVect b, int group)
 	cpFloat mass = length/160.0f;
 	
 	cpBody *body = cpSpaceAddBody(space, cpBodyNew(mass, mass*length*length/12.0f));
-	cpBodySetPos(body, center);
+	cpBodySetPosition(body, center);
 	
 	cpShape *shape = cpSpaceAddShape(space, cpSegmentShapeNew(body, cpvsub(a, center), cpvsub(b, center), 10.0f));
-	cpShapeSetGroup(shape, group);
+	cpShapeSetFilter(shape, cpShapeFilterNew(group, CP_ALL_CATEGORIES, CP_ALL_CATEGORIES));
 	
 	return body;
 }
@@ -84,7 +79,7 @@ init(void)
 	cpBody *body9  = add_bar(space, cpv( 240,   80), cpv( 160,    0), 3);
 	cpBody *body10 = add_bar(space, cpv( 160,    0), cpv( 240,  -80), 3);
 	cpBody *body11 = add_bar(space, cpv(-240,  -80), cpv(-160, -160), 4);
-	cpBody *body12 = add_bar(space, cpv(-160, -160), cpv( -80, -160), 0);
+	cpBody *body12 = add_bar(space, cpv(-160, -160), cpv( -80, -160), 4);
 	cpBody *body13 = add_bar(space, cpv(   0, -160), cpv(  80, -160), 0);
 	cpBody *body14 = add_bar(space, cpv( 160, -160), cpv( 240, -160), 0);
 	
@@ -159,6 +154,7 @@ destroy(cpSpace *space)
 
 ChipmunkDemo Springies = {
 	"Springies",
+	1.0/60.0,
 	init,
 	update,
 	ChipmunkDemoDefaultDrawImpl,

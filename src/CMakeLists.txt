@@ -8,8 +8,20 @@ if(BUILD_SHARED)
   add_library(chipmunk SHARED
     ${chipmunk_source_files}
   )
+  # Tell MSVC to compile the code as C++.
+  if(MSVC)
+    set_source_files_properties(${chipmunk_source_files} PROPERTIES LANGUAGE CXX)
+    set_target_properties(chipmunk PROPERTIES LINKER_LANGUAGE CXX)
+  endif(MSVC)
   # set the lib's version number
-  set_target_properties(chipmunk PROPERTIES VERSION 6.1.2)
+  # But avoid on Android because symlinks to version numbered .so's don't work with Android's Java-side loadLibrary.
+  if(NOT ANDROID)
+	  set_target_properties(chipmunk PROPERTIES VERSION 6.2.1)
+  endif(NOT ANDROID)
+  if(ANDROID)
+	  # need to explicitly link to the math library because the CMake/Android toolchains may not do it automatically
+	  target_link_libraries(chipmunk m)
+  endif(ANDROID)
   install(TARGETS chipmunk RUNTIME DESTINATION lib LIBRARY DESTINATION lib)
 endif(BUILD_SHARED)
 
@@ -17,6 +29,11 @@ if(BUILD_STATIC)
   add_library(chipmunk_static STATIC
     ${chipmunk_source_files}
   )
+  # Tell MSVC to compile the code as C++.
+  if(MSVC)
+    set_source_files_properties(${chipmunk_source_files} PROPERTIES LANGUAGE CXX)
+    set_target_properties(chipmunk_static PROPERTIES LINKER_LANGUAGE CXX)
+  endif(MSVC)
   # Sets chipmunk_static to output "libchipmunk.a" not "libchipmunk_static.a"
   set_target_properties(chipmunk_static PROPERTIES OUTPUT_NAME chipmunk)
   if(INSTALL_STATIC)

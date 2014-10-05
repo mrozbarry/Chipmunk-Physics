@@ -19,7 +19,7 @@
  * SOFTWARE.
  */
  
-#include "chipmunk.h"
+#include "chipmunk/chipmunk.h"
 #include "ChipmunkDemo.h"
 
 static const int image_width = 188;
@@ -71,43 +71,30 @@ get_pixel(int x, int y)
 static int bodyCount = 0;
 
 static void
-update(cpSpace *space)
+update(cpSpace *space, double dt)
 {
-	int steps = 1;
-	cpFloat dt = 1.0f/60.0f/(cpFloat)steps;
-	
-	for(int i=0; i<steps; i++){
-		cpSpaceStep(space, dt);
-	}
+	cpSpaceStep(space, dt);
 }
 
 static void
-PushBodyPos(cpBody *body, cpVect **cursor)
+DrawDot(cpBody *body, void *unused)
 {
-	(**cursor) = cpBodyGetPos(body);
-	(*cursor)++;
+	ChipmunkDebugDrawDot(3.0, cpBodyGetPosition(body), RGBAColor(200.0f/255.0f, 210.0f/255.0f, 230.0f/255.0f, 1.0f));
 }
 
 static void
 draw(cpSpace *space)
 {
-	// Make an array with all the body positions to draw dots
-	cpVect *verts = (cpVect *)cpcalloc(bodyCount, sizeof(cpVect));
+	cpSpaceEachBody(space, DrawDot, NULL);
 	
-	cpVect *cursor = verts;
-	cpSpaceEachBody(space, (cpSpaceBodyIteratorFunc)PushBodyPos, &cursor);
-	
-	ChipmunkDebugDrawPoints(3, bodyCount, verts, RGBAColor(200.0f/255.0f, 210.0f/255.0f, 230.0f/255.0f, 1.0f));
-	cpfree(verts);
-	
-	ChipmunkDebugDrawCollisionPoints(space);
+//	ChipmunkDebugDrawCollisionPoints(space);
 }
 
 static cpShape *
 make_ball(cpFloat x, cpFloat y)
 {
 	cpBody *body = cpBodyNew(1.0, INFINITY);
-	cpBodySetPos(body, cpv(x, y));
+	cpBodySetPosition(body, cpv(x, y));
 
 	cpShape *shape = cpCircleShapeNew(body, 0.95, cpvzero);
 	cpShapeSetElasticity(shape, 0.0);
@@ -147,14 +134,14 @@ init(void)
 		}
 	}
 	
-	body = cpSpaceAddBody(space, cpBodyNew(INFINITY, INFINITY));
-	cpBodySetPos(body, cpv(-1000, -10));
-	cpBodySetVel(body, cpv(400, 0));
+	body = cpSpaceAddBody(space, cpBodyNew(1e9, INFINITY));
+	cpBodySetPosition(body, cpv(-1000, -10));
+	cpBodySetVelocity(body, cpv(400, 0));
 
 	shape = cpSpaceAddShape(space, cpCircleShapeNew(body, 8.0f, cpvzero));
 	cpShapeSetElasticity(shape, 0.0);
 	cpShapeSetFriction(shape, 0.0);
-	cpShapeSetLayers(shape, NOT_GRABABLE_MASK);
+	cpShapeSetFilter(shape, NOT_GRABBABLE_FILTER);
 	
 	bodyCount++;
 
@@ -170,6 +157,7 @@ destroy(cpSpace *space)
 
 ChipmunkDemo LogoSmash = {
 	"Logo Smash",
+	1.0/60.0,
 	init,
 	update,
 	draw,

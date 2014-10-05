@@ -1,36 +1,34 @@
 Priorities:
-	Document ChipmunkMultiGrab, update example code.
-	Add license to showcase code. (and example code)
-	Release new Showcase app with push mode.
-	Finish AG tilemap tutorial
+	Basics tutorial.
 	Simple top down player controls.
 	* test tiny omega bug in cpvslerp().
 	User definable default winding.
-	Return 0/invalid normal when beginnig a raycast inside a shape.
 	User definable fast collision filtering.
 	Assertion (or warning?) for destroying a body with things still attached
-	Add assertions so that you can't construct (or maybe add?) a constraint with NULL bodies.
 	Bilinearly sampled image sampler function. (override the sample method to always take bilinear samples)
 	RGB Image Sampler class.
-	Convert body between static/dynamic.
-	More UIKit examples? There are a surprising number of questions on this.
 	Reorganize Chimpnuk Pro directory structure. Too flat and confusing.
-	Finish the GJK branch.
-	Finish smooth line collisions
 	Improve the ACD splitting plane algorithm.
 	Fishing game
-	Crayon Ball tutorial
-	Redo Logosmash with more particles?! :D
 	Motorcycle in a spinning cage
-	Squid thingy like TomorrowPlusX. (Would be better with seg/seg collisions)
+	Squid thingy like TomorrowPlusX.
 
-	Redo AngryChipmunks as Cocos2D 2.x
-	Check that SpacePatrol and CloudBomber work when Cocos2D 2.1 is released.
 	Investigate getting better PhysicsEditor support.
 
 Unordered
 	Fix solver issues with the groove joint.
 	Use a slop tolerance on joint boundaries.
+
+Website things
+	-Google analytics
+	Rename to Chipmunk2D
+	Make it so people can upgrade license versions
+	upgrade to new version
+	Coupon codes (unlimited use)
+	log purchase IP for fraud
+	Don't make any mistakes: http://www.gamasutra.com/view/feature/185773/the_top_10_mistakes_tool_.php
+	Several people want a Chipmunk Facebook page.
+	figure out and redo front page.	Chipmunk js examples.
 
 Future things to think about:
 	breakable object support functions?
@@ -42,4 +40,19 @@ Future things to think about:
 	Easy callback programable joint?
 	Top down racing game. (Need the callback constraint)
 	cpBodyActivateStatic() should also activate joints?
-	Figure out why poly contacts can sometimes be unstable when driven by a strong constraint
+
+Chipmunk 7:
+	Speculative contacts
+	User definable constraint
+	Custom contact constraint with rolling friction and per contact surface v.
+	Serialization
+	API changes, different body/shape instantiation.
+	Collision handler objects with additional callbacks.
+	Calculate contact anchors to get rid of contact pos. (needed for speculative contacts anyway)
+	Mass property calculation changes.
+	Change apply force/impulse and point velocity functions.
+	Separate doxygen docs for Objective-C parts and C parts.
+	Cocos2D xcode templates.
+	Custom contacts using cpArbiter user data.
+	Built in transform type.
+	

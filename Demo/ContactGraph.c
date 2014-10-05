@@ -19,7 +19,7 @@
  * SOFTWARE.
  */
  
-#include "chipmunk.h"
+#include "chipmunk/chipmunk.h"
 #include "ChipmunkDemo.h"
 
 // static body that we will be making into a scale
@@ -51,31 +51,30 @@ BallIterator(cpBody *body, cpArbiter *arb, int *count)
 	// body is the body we are iterating the arbiters for.
 	// CP_ARBITER_GET_*() in an arbiter iterator always returns the body/shape for the iterated body first.
 	CP_ARBITER_GET_SHAPES(arb, ball, other);
-	
-	// Grab the bounding box, expand it slightly (for visibility) and draw it.
-	cpBB bb = cpShapeGetBB(other);
-	bb.l -= 5.0;
-	bb.b -= 5.0;
-	bb.r += 5.0;
-	bb.t += 5.0;
-	
-	ChipmunkDebugDrawBB(bb, RGBAColor(1, 0, 0, 1));
+	ChipmunkDebugDrawBB(cpShapeGetBB(other), RGBAColor(1, 0, 0, 1));
 	
 	(*count)++;
 }
 
-#endif
-
+struct CrushingContext {
+	cpFloat magnitudeSum;
+	cpVect vectorSum;
+};
 
 static void
-update(cpSpace *space)
+EstimateCrushing(cpBody *body, cpArbiter *arb, struct CrushingContext *context)
 {
-	int steps = 1;
-	cpFloat dt = 1.0f/60.0f/(cpFloat)steps;
-	
-	for(int i=0; i<steps; i++){
-		cpSpaceStep(space, dt);
-	}
+	cpVect j = cpArbiterTotalImpulseWithFriction(arb);
+	context->magnitudeSum += cpvlength(j);
+	context->vectorSum = cpvadd(context->vectorSum, j);
+}
+
+#endif
+
+static void
+update(cpSpace *space, double dt)
+{
+	cpSpaceStep(space, dt);
 	
 	ChipmunkDemoPrintString("Place objects on the scale to weigh them. The ball marks the shapes it's sitting on.\n");
 	
@@ -85,7 +84,7 @@ update(cpSpace *space)
 	#if USE_BLOCKS
 		__block cpVect impulseSum = cpvzero;
 		cpBodyEachArbiter_b(scaleStaticBody, ^(cpArbiter *arb){
-			impulseSum = cpvadd(impulseSum, cpArbiterTotalImpulseWithFriction(arb));
+			impulseSum = cpvadd(impulseSum, cpArbiterTotalImpulse(arb));
 		});
 	#else
 		cpVect impulseSum = cpvzero;
@@ -109,15 +108,7 @@ update(cpSpace *space)
 			// body is the body we are iterating the arbiters for.
 			// CP_ARBITER_GET_*() in an arbiter iterator always returns the body/shape for the iterated body first.
 			CP_ARBITER_GET_SHAPES(arb, ball, other);
-			
-			// Grab the bounding box, expand it slightly (for visibility) and draw it.
-			cpBB bb = cpShapeGetBB(other);
-			bb.l -= 5.0;
-			bb.b -= 5.0;
-			bb.r += 5.0;
-			bb.t += 5.0;
-			
-			ChipmunkDebugDrawBB(bb, RGBAColor(1, 0, 0, 1));
+			ChipmunkDebugDrawBB(cpShapeGetBB(other), RGBAColor(1, 0, 0, 1));
 			
 			count++;
 		});
@@ -127,6 +118,30 @@ update(cpSpace *space)
 	#endif
 	
 	ChipmunkDemoPrintString("The ball is touching %d shapes.\n", count);
+	
+	#if USE_BLOCKS
+		__block cpFloat magnitudeSum = 0.0f;
+		__block cpVect vectorSum = cpvzero;
+		cpBodyEachArbiter_b(ballBody, ^(cpArbiter *arb){
+			cpVect j = cpArbiterTotalImpulse(arb);
+			magnitudeSum += cpvlength(j);
+			vectorSum = cpvadd(vectorSum, j);
+		});
+		
+		cpFloat crushForce = (magnitudeSum - cpvlength(vectorSum))*dt;
+	#else
+		struct CrushingContext crush = {0.0f, cpvzero};
+		cpBodyEachArbiter(ballBody, (cpBodyArbiterIteratorFunc)EstimateCrushing, &crush);
+		
+		cpFloat crushForce = (crush.magnitudeSum - cpvlength(crush.vectorSum))*dt;
+	#endif
+	
+	
+	if(crushForce > 10.0f){
+		ChipmunkDemoPrintString("The ball is being crushed. (f: %.2f)", crushForce);
+	} else {
+		ChipmunkDemoPrintString("The ball is not being crushed. (f: %.2f)", crushForce);
+	}
 }
 
 #define WIDTH 4.0f
@@ -139,10 +154,6 @@ init(void)
 	cpSpaceSetIterations(space, 30);
 	cpSpaceSetGravity(space, cpv(0, -300));
 	cpSpaceSetCollisionSlop(space, 0.5);
-	
-	// For cpBodyEachArbiter() to work you must explicitly enable the contact graph or enable sleeping.
-	// Generating the contact graph is a small but measurable ~5-10% performance hit so it's not enabled by default.
-//	cpSpaceSetEnableContactGraph(space, cpTrue);
 	cpSpaceSetSleepTimeThreshold(space, 1.0f);
 	
 	cpBody *body, *staticBody = cpSpaceGetStaticBody(space);
@@ -152,30 +163,30 @@ init(void)
 	shape = cpSpaceAddShape(space, cpSegmentShapeNew(staticBody, cpv(-320,-240), cpv(-320,240), 0.0f));
 	cpShapeSetElasticity(shape, 1.0f);
 	cpShapeSetFriction(shape, 1.0f);
-	cpShapeSetLayers(shape, NOT_GRABABLE_MASK);
+	cpShapeSetFilter(shape, NOT_GRABBABLE_FILTER);
 
 	shape = cpSpaceAddShape(space, cpSegmentShapeNew(staticBody, cpv(320,-240), cpv(320,240), 0.0f));
 	cpShapeSetElasticity(shape, 1.0f);
 	cpShapeSetFriction(shape, 1.0f);
-	cpShapeSetLayers(shape, NOT_GRABABLE_MASK);
+	cpShapeSetFilter(shape, NOT_GRABBABLE_FILTER);
 
 	shape = cpSpaceAddShape(space, cpSegmentShapeNew(staticBody, cpv(-320,-240), cpv(320,-240), 0.0f));
 	cpShapeSetElasticity(shape, 1.0f);
 	cpShapeSetFriction(shape, 1.0f);
-	cpShapeSetLayers(shape, NOT_GRABABLE_MASK);
+	cpShapeSetFilter(shape, NOT_GRABBABLE_FILTER);
 	
-	scaleStaticBody = cpBodyNewStatic();
+	scaleStaticBody = cpSpaceAddBody(space, cpBodyNewStatic());
 	shape = cpSpaceAddShape(space, cpSegmentShapeNew(scaleStaticBody, cpv(-240,-180), cpv(-140,-180), 4.0f));
 	cpShapeSetElasticity(shape, 1.0f);
 	cpShapeSetFriction(shape, 1.0f);
-	cpShapeSetLayers(shape, NOT_GRABABLE_MASK);
+	cpShapeSetFilter(shape, NOT_GRABBABLE_FILTER);
 	
 	// add some boxes to stack on the scale
 	for(int i=0; i<5; i++){
 		body = cpSpaceAddBody(space, cpBodyNew(1.0f, cpMomentForBox(1.0f, 30.0f, 30.0f)));
-		cpBodySetPos(body, cpv(0, i*32 - 220));
+		cpBodySetPosition(body, cpv(0, i*32 - 220));
 		
-		shape = cpSpaceAddShape(space, cpBoxShapeNew(body, 30.0f, 30.0f));
+		shape = cpSpaceAddShape(space, cpBoxShapeNew(body, 30.0f, 30.0f, 0.0));
 		cpShapeSetElasticity(shape, 0.0f);
 		cpShapeSetFriction(shape, 0.8f);
 	}
@@ -183,7 +194,7 @@ init(void)
 	// Add a ball that we'll track which objects are beneath it.
 	cpFloat radius = 15.0f;
 	ballBody = cpSpaceAddBody(space, cpBodyNew(10.0f, cpMomentForCircle(10.0f, 0.0f, radius, cpvzero)));
-	cpBodySetPos(ballBody, cpv(120, -240 + radius+5));
+	cpBodySetPosition(ballBody, cpv(120, -240 + radius+5));
 
 	shape = cpSpaceAddShape(space, cpCircleShapeNew(ballBody, radius, cpvzero));
 	cpShapeSetElasticity(shape, 0.0f);
@@ -197,12 +208,11 @@ destroy(cpSpace *space)
 {
 	ChipmunkDemoFreeSpaceChildren(space);
 	cpSpaceFree(space);
-	
-	cpBodyFree(scaleStaticBody);
 }
 
 ChipmunkDemo ContactGraph = {
 	"Contact Graph",
+	1.0/60.0,
 	init,
 	update,
 	ChipmunkDemoDefaultDrawImpl,

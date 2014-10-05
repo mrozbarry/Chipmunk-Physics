@@ -19,18 +19,14 @@
  * SOFTWARE.
  */
  
-#include "chipmunk.h"
+#include "chipmunk/chipmunk.h"
 #include "ChipmunkDemo.h"
+#include "chipmunk_unsafe.h"
 
 static void
-update(cpSpace *space)
+update(cpSpace *space, double dt)
 {
-	int steps = 3;
-	cpFloat dt = 1.0f/60.0f/(cpFloat)steps;
-	
-	for(int i=0; i<steps; i++){
-		cpSpaceStep(space, dt);
-	}
+	cpSpaceStep(space, dt);
 }
 
 static cpSpace *
@@ -49,25 +45,25 @@ init(void)
 	shape = cpSpaceAddShape(space, cpSegmentShapeNew(staticBody, cpv(-320,-240), cpv(-320,240), 0.0f));
 	cpShapeSetElasticity(shape, 1.0f);
 	cpShapeSetFriction(shape, 1.0f);
-	cpShapeSetLayers(shape, NOT_GRABABLE_MASK);
+	cpShapeSetFilter(shape, NOT_GRABBABLE_FILTER);
 
 	shape = cpSpaceAddShape(space, cpSegmentShapeNew(staticBody, cpv(320,-240), cpv(320,240), 0.0f));
 	cpShapeSetElasticity(shape, 1.0f);
 	cpShapeSetFriction(shape, 1.0f);
-	cpShapeSetLayers(shape, NOT_GRABABLE_MASK);
+	cpShapeSetFilter(shape, NOT_GRABBABLE_FILTER);
 
 	shape = cpSpaceAddShape(space, cpSegmentShapeNew(staticBody, cpv(-320,-240), cpv(320,-240), 0.0f));
 	cpShapeSetElasticity(shape, 1.0f);
 	cpShapeSetFriction(shape, 1.0f);
-	cpShapeSetLayers(shape, NOT_GRABABLE_MASK);
+	cpShapeSetFilter(shape, NOT_GRABBABLE_FILTER);
 	
 	// Add lots of boxes.
 	for(int i=0; i<14; i++){
 		for(int j=0; j<=i; j++){
 			body = cpSpaceAddBody(space, cpBodyNew(1.0f, cpMomentForBox(1.0f, 30.0f, 30.0f)));
-			cpBodySetPos(body, cpv(j*32 - i*16, 300 - i*32));
+			cpBodySetPosition(body, cpv(j*32 - i*16, 300 - i*32));
 			
-			shape = cpSpaceAddShape(space, cpBoxShapeNew(body, 30.0f, 30.0f));
+			shape = cpSpaceAddShape(space, cpBoxShapeNew(body, 30.0f, 30.0f, 0.5f));
 			cpShapeSetElasticity(shape, 0.0f);
 			cpShapeSetFriction(shape, 0.8f);
 		}
@@ -76,7 +72,7 @@ init(void)
 	// Add a ball to make things more interesting
 	cpFloat radius = 15.0f;
 	body = cpSpaceAddBody(space, cpBodyNew(10.0f, cpMomentForCircle(10.0f, 0.0f, radius, cpvzero)));
-	cpBodySetPos(body, cpv(0, -240 + radius+5));
+	cpBodySetPosition(body, cpv(0, -240 + radius+5));
 
 	shape = cpSpaceAddShape(space, cpCircleShapeNew(body, radius, cpvzero));
 	cpShapeSetElasticity(shape, 0.0f);
@@ -94,6 +90,7 @@ destroy(cpSpace *space)
 
 ChipmunkDemo PyramidStack = {
 	"Pyramid Stack",
+	1.0/180.0,
 	init,
 	update,
 	ChipmunkDemoDefaultDrawImpl,
