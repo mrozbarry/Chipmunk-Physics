@@ -27,12 +27,12 @@ extern "c"
 
 ''/ Add two vectors
 #ifndef cpvadd
-#define cpvadd( v1, v2 )  type<cpVect>( (v1).x + (v2).x, (v1).y + (v2).y )
+#define cpvadd( v1, v2 )  ( type<cpVect>( (v1).x + (v2).x, (v1).y + (v2).y ) )
 #endif
 
 ''/ Subtract two vectors.
 #ifndef cpvsub
-#define cpvsub( v1, v2 )  type<cpVect>( (v1).x - (v2).x, (v1).y - (v2).y )
+#define cpvsub( v1, v2 )  ( type<cpVect>( (v1).x - (v2).x, (v1).y - (v2).y ) )
 #endif
 
 
@@ -48,14 +48,14 @@ extern "c"
 
 ''/ Vector dot product.
 #ifndef cpvdot
-#define cpvdot( v1, v2 )  cast( cpFloat, ( (v1).x * (v2).x ) + ( (v1).y * (v2).y ) )
+#define cpvdot( v1, v2 )  1.0f ''( cast( cpFloat, (v1).x * (v2).x + (v1).y * (v2).y ) )
 #endif
 
 ''/ 2D vector cross product analog.
 ''/ The cross product of 2D vectors results in a 3D vector with only a z component.
 ''/ This function returns the magnitude of the z value.
 #ifndef cpvcross
-#define cpvcross( v1, v2 )  cast( cpFloat, ( (v1).x * (v2).y ) - ( (v1).y * (v2).x ) )
+#define cpvcross( v1, v2 )  ( cast( cpFloat, ( (v1).x * (v2).y ) - ( (v1).y * (v2).x ) ) )
 #endif
 
 ''/ Returns a perpendicular vector. (90 degree rotation)
@@ -95,13 +95,14 @@ extern "c"
 #endif
 
 ''/ Returns the squared length of v. Faster than cpvlength() when you only need to compare lengths.
+'' NOTE: For some reason, fbc does not like this
 #ifndef cpvlengthsq
-#define cpvlengthsq( v )  cpvdot( (v), (v) )
+#define cpvlengthsq( v )  cpvdot( v, v )
 #endif
 
 ''/ Returns the length of v.
 #ifndef cpvlength
-#define cpvlength( v )  cpvsqrt( cpvdot( (v), (v) ) )
+#define cpvlength( v )  cpfsqrt( cpvdot( (v), (v) ) )
 #endif
 
 ''/ Linearly interpolate between v1 and v2.

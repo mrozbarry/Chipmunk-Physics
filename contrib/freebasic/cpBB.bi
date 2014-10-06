@@ -41,7 +41,7 @@ end type
 
 ''/ Constructs a cpBB centered on a point with the given extents (half sizes).
 #ifndef cpBBNewForExtents
-#define cpBBNewForExtents( c, hw, hh ) type<cpBB>( c.x - h2, c.y - hh, c.x + hw, c.y + hh)
+#define cpBBNewForExtents( c, hw, hh ) type<cpBB>( c.x - hw, c.y - hh, c.x + hw, c.y + hh)
 #endif
 
 ''/ Constructs a cpBB for a circle with the given position and radius.
@@ -143,5 +143,3 @@ declare function cpBBWrapVect( byval bb as const cpBB, byval v as const cpVect )
 #endif
 
 end extern
-
-#endif

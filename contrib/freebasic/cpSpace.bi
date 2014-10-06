@@ -2,11 +2,11 @@
 
 extern "C"
 
-type cpSpaceArbiterApplyImpulseFunc as sub(byval arb as cpArbiter ptr)
-type cpCollisionBeginFunc as function(byval arb as cpArbiter ptr, byval space_ as cpSpace ptr, byval userData as cpDataPointer) as cpBool
-type cpCollisionPreSolveFunc as function(byval arb as cpArbiter ptr, byval space_ as cpSpace ptr, byval userData as cpDataPointer) as cpBool
-type cpCollisionPostSolveFunc as sub(byval arb as cpArbiter ptr, byval space_ as cpSpace ptr, byval userData as cpDataPointer)
-type cpCollisionSeparateFunc as sub(byval arb as cpArbiter ptr, byval space_ as cpSpace ptr, byval userData as cpDataPointer)
+type cpSpaceArbiterApplyImpulseFunc as sub(byval arb as cpArbiter_ ptr)
+type cpCollisionBeginFunc as function(byval arb as cpArbiter_ ptr, byval space_ as cpSpace_ ptr, byval userData as cpDataPointer) as cpBool
+type cpCollisionPreSolveFunc as function(byval arb as cpArbiter_ ptr, byval space_ as cpSpace_ ptr, byval userData as cpDataPointer) as cpBool
+type cpCollisionPostSolveFunc as sub(byval arb as cpArbiter_ ptr, byval space_ as cpSpace_ ptr, byval userData as cpDataPointer)
+type cpCollisionSeparateFunc as sub(byval arb as cpArbiter_ ptr, byval space_ as cpSpace_ ptr, byval userData as cpDataPointer)
 
 type cpCollisionHandler
 	typeA as cpCollisionType
@@ -18,83 +18,83 @@ type cpCollisionHandler
 	userData as cpDataPointer
 end type
 
-declare function cpSpaceAlloc() as cpSpace ptr
-declare function cpSpaceInit(byval space_ as cpSpace ptr) as cpSpace ptr
-declare function cpSpaceNew() as cpSpace ptr
-declare sub cpSpaceDestroy(byval space_ as cpSpace ptr)
-declare sub cpSpaceFree(byval space_ as cpSpace ptr)
-declare function cpSpaceGetIterations(byval space_ as const cpSpace ptr) as long
-declare sub cpSpaceSetIterations(byval space_ as cpSpace ptr, byval iterations as long)
-declare function cpSpaceGetGravity(byval space_ as const cpSpace ptr) as cpVect
-declare sub cpSpaceSetGravity(byval space_ as cpSpace ptr, byval gravity as cpVect)
-declare function cpSpaceGetDamping(byval space_ as const cpSpace ptr) as cpFloat
-declare sub cpSpaceSetDamping(byval space_ as cpSpace ptr, byval damping as cpFloat)
-declare function cpSpaceGetIdleSpeedThreshold(byval space_ as const cpSpace ptr) as cpFloat
-declare sub cpSpaceSetIdleSpeedThreshold(byval space_ as cpSpace ptr, byval idleSpeedThreshold as cpFloat)
-declare function cpSpaceGetSleepTimeThreshold(byval space_ as const cpSpace ptr) as cpFloat
-declare sub cpSpaceSetSleepTimeThreshold(byval space_ as cpSpace ptr, byval sleepTimeThreshold as cpFloat)
-declare function cpSpaceGetCollisionSlop(byval space_ as const cpSpace ptr) as cpFloat
-declare sub cpSpaceSetCollisionSlop(byval space_ as cpSpace ptr, byval collisionSlop as cpFloat)
-declare function cpSpaceGetCollisionBias(byval space_ as const cpSpace ptr) as cpFloat
-declare sub cpSpaceSetCollisionBias(byval space_ as cpSpace ptr, byval collisionBias as cpFloat)
-declare function cpSpaceGetCollisionPersistence(byval space_ as const cpSpace ptr) as cpTimestamp
-declare sub cpSpaceSetCollisionPersistence(byval space_ as cpSpace ptr, byval collisionPersistence as cpTimestamp)
-declare function cpSpaceGetUserData(byval space_ as const cpSpace ptr) as cpDataPointer
-declare sub cpSpaceSetUserData(byval space_ as cpSpace ptr, byval userData as cpDataPointer)
-declare function cpSpaceGetStaticBody(byval space_ as const cpSpace ptr) as cpBody ptr
-declare function cpSpaceGetCurrentTimeStep(byval space_ as const cpSpace ptr) as cpFloat
-declare function cpSpaceIsLocked(byval space_ as cpSpace ptr) as cpBool
-declare function cpSpaceAddDefaultCollisionHandler(byval space_ as cpSpace ptr) as cpCollisionHandler ptr
-declare function cpSpaceAddCollisionHandler(byval space_ as cpSpace ptr, byval a as cpCollisionType, byval b as cpCollisionType) as cpCollisionHandler ptr
-declare function cpSpaceAddWildcardHandler(byval space_ as cpSpace ptr, byval type_ as cpCollisionType) as cpCollisionHandler ptr
-declare function cpSpaceAddShape(byval space_ as cpSpace ptr, byval shape as cpShape ptr) as cpShape ptr
-declare function cpSpaceAddBody(byval space_ as cpSpace ptr, byval body as cpBody ptr) as cpBody ptr
-declare function cpSpaceAddConstraint(byval space_ as cpSpace ptr, byval constraint as cpConstraint ptr) as cpConstraint ptr
-declare sub cpSpaceRemoveShape(byval space_ as cpSpace ptr, byval shape as cpShape ptr)
-declare sub cpSpaceRemoveBody(byval space_ as cpSpace ptr, byval body as cpBody ptr)
-declare sub cpSpaceRemoveConstraint(byval space_ as cpSpace ptr, byval constraint as cpConstraint ptr)
-declare function cpSpaceContainsShape(byval space_ as cpSpace ptr, byval shape as cpShape ptr) as cpBool
-declare function cpSpaceContainsBody(byval space_ as cpSpace ptr, byval body as cpBody ptr) as cpBool
-declare function cpSpaceContainsConstraint(byval space_ as cpSpace ptr, byval constraint as cpConstraint ptr) as cpBool
+declare function cpSpaceAlloc() as cpSpace_ ptr
+declare function cpSpaceInit(byval space_ as cpSpace_ ptr) as cpSpace_ ptr
+declare function cpSpaceNew() as cpSpace_ ptr
+declare sub cpSpaceDestroy(byval space_ as cpSpace_ ptr)
+declare sub cpSpaceFree(byval space_ as cpSpace_ ptr)
+declare function cpSpaceGetIterations(byval space_ as const cpSpace_ ptr) as long
+declare sub cpSpaceSetIterations(byval space_ as cpSpace_ ptr, byval iterations as long)
+declare function cpSpaceGetGravity(byval space_ as const cpSpace_ ptr) as cpVect
+declare sub cpSpaceSetGravity(byval space_ as cpSpace_ ptr, byval gravity as cpVect)
+declare function cpSpaceGetDamping(byval space_ as const cpSpace_ ptr) as cpFloat
+declare sub cpSpaceSetDamping(byval space_ as cpSpace_ ptr, byval damping as cpFloat)
+declare function cpSpaceGetIdleSpeedThreshold(byval space_ as const cpSpace_ ptr) as cpFloat
+declare sub cpSpaceSetIdleSpeedThreshold(byval space_ as cpSpace_ ptr, byval idleSpeedThreshold as cpFloat)
+declare function cpSpaceGetSleepTimeThreshold(byval space_ as const cpSpace_ ptr) as cpFloat
+declare sub cpSpaceSetSleepTimeThreshold(byval space_ as cpSpace_ ptr, byval sleepTimeThreshold as cpFloat)
+declare function cpSpaceGetCollisionSlop(byval space_ as const cpSpace_ ptr) as cpFloat
+declare sub cpSpaceSetCollisionSlop(byval space_ as cpSpace_ ptr, byval collisionSlop as cpFloat)
+declare function cpSpaceGetCollisionBias(byval space_ as const cpSpace_ ptr) as cpFloat
+declare sub cpSpaceSetCollisionBias(byval space_ as cpSpace_ ptr, byval collisionBias as cpFloat)
+declare function cpSpaceGetCollisionPersistence(byval space_ as const cpSpace_ ptr) as cpTimestamp
+declare sub cpSpaceSetCollisionPersistence(byval space_ as cpSpace_ ptr, byval collisionPersistence as cpTimestamp)
+declare function cpSpaceGetUserData(byval space_ as const cpSpace_ ptr) as cpDataPointer
+declare sub cpSpaceSetUserData(byval space_ as cpSpace_ ptr, byval userData as cpDataPointer)
+declare function cpSpaceGetStaticBody(byval space_ as const cpSpace_ ptr) as cpBody_ ptr
+declare function cpSpaceGetCurrentTimeStep(byval space_ as const cpSpace_ ptr) as cpFloat
+declare function cpSpaceIsLocked(byval space_ as cpSpace_ ptr) as cpBool
+declare function cpSpaceAddDefaultCollisionHandler(byval space_ as cpSpace_ ptr) as cpCollisionHandler ptr
+declare function cpSpaceAddCollisionHandler(byval space_ as cpSpace_ ptr, byval a as cpCollisionType, byval b as cpCollisionType) as cpCollisionHandler ptr
+declare function cpSpaceAddWildcardHandler(byval space_ as cpSpace_ ptr, byval type_ as cpCollisionType) as cpCollisionHandler ptr
+declare function cpSpaceAddShape(byval space_ as cpSpace_ ptr, byval shape as cpShape_ ptr) as cpShape_ ptr
+declare function cpSpaceAddBody(byval space_ as cpSpace_ ptr, byval body as cpBody_ ptr) as cpBody_ ptr
+declare function cpSpaceAddConstraint(byval space_ as cpSpace_ ptr, byval constraint as cpConstraint_ ptr) as cpConstraint_ ptr
+declare sub cpSpaceRemoveShape(byval space_ as cpSpace_ ptr, byval shape as cpShape_ ptr)
+declare sub cpSpaceRemoveBody(byval space_ as cpSpace_ ptr, byval body as cpBody_ ptr)
+declare sub cpSpaceRemoveConstraint(byval space_ as cpSpace_ ptr, byval constraint as cpConstraint_ ptr)
+declare function cpSpaceContainsShape(byval space_ as cpSpace_ ptr, byval shape as cpShape_ ptr) as cpBool
+declare function cpSpaceContainsBody(byval space_ as cpSpace_ ptr, byval body as cpBody_ ptr) as cpBool
+declare function cpSpaceContainsConstraint(byval space_ as cpSpace_ ptr, byval constraint as cpConstraint_ ptr) as cpBool
 
-type cpPostStepFunc as sub(byval space_ as cpSpace ptr, byval key as any ptr, byval data_ as any ptr)
+type cpPostStepFunc as sub(byval space_ as cpSpace_ ptr, byval key as any ptr, byval data_ as any ptr)
 
-declare function cpSpaceAddPostStepCallback(byval space_ as cpSpace ptr, byval func as cpPostStepFunc, byval key as any ptr, byval data_ as any ptr) as cpBool
+declare function cpSpaceAddPostStepCallback(byval space_ as cpSpace_ ptr, byval func as cpPostStepFunc, byval key as any ptr, byval data_ as any ptr) as cpBool
 
-type cpSpacePointQueryFunc as sub(byval shape as cpShape ptr, byval point_ as cpVect, byval distance as cpFloat, byval gradient as cpVect, byval data_ as any ptr)
+type cpSpacePointQueryFunc as sub(byval shape as cpShape_ ptr, byval point_ as cpVect, byval distance as cpFloat, byval gradient as cpVect, byval data_ as any ptr)
 
-declare sub cpSpacePointQuery(byval space_ as cpSpace ptr, byval point_ as cpVect, byval maxDistance as cpFloat, byval filter as cpShapeFilter, byval func as cpSpacePointQueryFunc, byval data_ as any ptr)
-declare function cpSpacePointQueryNearest(byval space_ as cpSpace ptr, byval point_ as cpVect, byval maxDistance as cpFloat, byval filter as cpShapeFilter, byval out_ as cpPointQueryInfo ptr) as cpShape ptr
+declare sub cpSpacePointQuery(byval space_ as cpSpace_ ptr, byval point_ as cpVect, byval maxDistance as cpFloat, byval filter as cpShapeFilter, byval func as cpSpacePointQueryFunc, byval data_ as any ptr)
+declare function cpSpacePointQueryNearest(byval space_ as cpSpace_ ptr, byval point_ as cpVect, byval maxDistance as cpFloat, byval filter as cpShapeFilter, byval out_ as cpPointQueryInfo ptr) as cpShape_ ptr
 
-type cpSpaceSegmentQueryFunc as sub(byval shape as cpShape ptr, byval point_ as cpVect, byval normal as cpVect, byval alpha as cpFloat, byval data_ as any ptr)
+type cpSpaceSegmentQueryFunc as sub(byval shape as cpShape_ ptr, byval point_ as cpVect, byval normal as cpVect, byval alpha as cpFloat, byval data_ as any ptr)
 
-declare sub cpSpaceSegmentQuery(byval space_ as cpSpace ptr, byval start as cpVect, byval end_ as cpVect, byval radius as cpFloat, byval filter as cpShapeFilter, byval func as cpSpaceSegmentQueryFunc, byval data_ as any ptr)
-declare function cpSpaceSegmentQueryFirst(byval space_ as cpSpace ptr, byval start as cpVect, byval end_ as cpVect, byval radius as cpFloat, byval filter as cpShapeFilter, byval out_ as cpSegmentQueryInfo ptr) as cpShape ptr
+declare sub cpSpaceSegmentQuery(byval space_ as cpSpace_ ptr, byval start as cpVect, byval end_ as cpVect, byval radius as cpFloat, byval filter as cpShapeFilter, byval func as cpSpaceSegmentQueryFunc, byval data_ as any ptr)
+declare function cpSpaceSegmentQueryFirst(byval space_ as cpSpace_ ptr, byval start as cpVect, byval end_ as cpVect, byval radius as cpFloat, byval filter as cpShapeFilter, byval out_ as cpSegmentQueryInfo ptr) as cpShape_ ptr
 
-type cpSpaceBBQueryFunc as sub(byval shape as cpShape ptr, byval data_ as any ptr)
+type cpSpaceBBQueryFunc as sub(byval shape as cpShape_ ptr, byval data_ as any ptr)
 
-declare sub cpSpaceBBQuery(byval space_ as cpSpace ptr, byval bb as cpBB, byval filter as cpShapeFilter, byval func as cpSpaceBBQueryFunc, byval data_ as any ptr)
+declare sub cpSpaceBBQuery(byval space_ as cpSpace_ ptr, byval bb as cpBB, byval filter as cpShapeFilter, byval func as cpSpaceBBQueryFunc, byval data_ as any ptr)
 
-type cpSpaceShapeQueryFunc as sub(byval shape as cpShape ptr, byval points as cpContactPointSet ptr, byval data_ as any ptr)
+type cpSpaceShapeQueryFunc as sub(byval shape as cpShape_ ptr, byval points as cpContactPointSet ptr, byval data_ as any ptr)
 
-declare function cpSpaceShapeQuery(byval space_ as cpSpace ptr, byval shape as cpShape ptr, byval func as cpSpaceShapeQueryFunc, byval data_ as any ptr) as cpBool
+declare function cpSpaceShapeQuery(byval space_ as cpSpace_ ptr, byval shape as cpShape_ ptr, byval func as cpSpaceShapeQueryFunc, byval data_ as any ptr) as cpBool
 
-type cpSpaceBodyIteratorFunc as sub(byval body as cpBody ptr, byval data_ as any ptr)
+type cpSpaceBodyIteratorFunc as sub(byval body as cpBody_ ptr, byval data_ as any ptr)
 
-declare sub cpSpaceEachBody(byval space_ as cpSpace ptr, byval func as cpSpaceBodyIteratorFunc, byval data_ as any ptr)
+declare sub cpSpaceEachBody(byval space_ as cpSpace_ ptr, byval func as cpSpaceBodyIteratorFunc, byval data_ as any ptr)
 
-type cpSpaceShapeIteratorFunc as sub(byval shape as cpShape ptr, byval data_ as any ptr)
+type cpSpaceShapeIteratorFunc as sub(byval shape as cpShape_ ptr, byval data_ as any ptr)
 
-declare sub cpSpaceEachShape(byval space_ as cpSpace ptr, byval func as cpSpaceShapeIteratorFunc, byval data_ as any ptr)
+declare sub cpSpaceEachShape(byval space_ as cpSpace_ ptr, byval func as cpSpaceShapeIteratorFunc, byval data_ as any ptr)
 
-type cpSpaceConstraintIteratorFunc as sub(byval constraint as cpConstraint ptr, byval data_ as any ptr)
+type cpSpaceConstraintIteratorFunc as sub(byval constraint as cpConstraint_ ptr, byval data_ as any ptr)
 
-declare sub cpSpaceEachConstraint(byval space_ as cpSpace ptr, byval func as cpSpaceConstraintIteratorFunc, byval data_ as any ptr)
-declare sub cpSpaceReindexStatic(byval space_ as cpSpace ptr)
-declare sub cpSpaceReindexShape(byval space_ as cpSpace ptr, byval shape as cpShape ptr)
-declare sub cpSpaceReindexShapesForBody(byval space_ as cpSpace ptr, byval body as cpBody ptr)
-declare sub cpSpaceUseSpatialHash(byval space_ as cpSpace ptr, byval dim_ as cpFloat, byval count as long)
-declare sub cpSpaceStep(byval space_ as cpSpace ptr, byval dt as cpFloat)
+declare sub cpSpaceEachConstraint(byval space_ as cpSpace_ ptr, byval func as cpSpaceConstraintIteratorFunc, byval data_ as any ptr)
+declare sub cpSpaceReindexStatic(byval space_ as cpSpace_ ptr)
+declare sub cpSpaceReindexShape(byval space_ as cpSpace_ ptr, byval shape as cpShape_ ptr)
+declare sub cpSpaceReindexShapesForBody(byval space_ as cpSpace_ ptr, byval body as cpBody_ ptr)
+declare sub cpSpaceUseSpatialHash(byval space_ as cpSpace_ ptr, byval dim_ as cpFloat, byval count as long)
+declare sub cpSpaceStep(byval space_ as cpSpace_ ptr, byval dt as cpFloat)
 
 type cpSpaceDebugColor
 	r as single
@@ -108,7 +108,7 @@ type cpSpaceDebugDrawSegmentImpl as sub(byval a as cpVect, byval b as cpVect, by
 type cpSpaceDebugDrawFatSegmentImpl as sub(byval a as cpVect, byval b as cpVect, byval radius as cpFloat, byval outlineColor as cpSpaceDebugColor, byval fillColor as cpSpaceDebugColor, byval data_ as cpDataPointer ptr)
 type cpSpaceDebugDrawPolygonImpl as sub(byval count as long, byval verts as const cpVect ptr, byval radius as cpFloat, byval outlineColor as cpSpaceDebugColor, byval fillColor as cpSpaceDebugColor, byval data_ as cpDataPointer ptr)
 type cpSpaceDebugDrawDotImpl as sub(byval size as cpFloat, byval pos_ as cpVect, byval color_ as cpSpaceDebugColor, byval data_ as cpDataPointer ptr)
-type cpSpaceDebugDrawColorForShapeImpl as function(byval shape as cpShape ptr, byval data_ as cpDataPointer ptr) as cpSpaceDebugColor
+type cpSpaceDebugDrawColorForShapeImpl as function(byval shape as cpShape_ ptr, byval data_ as cpDataPointer ptr) as cpSpaceDebugColor
 
 type cpSpaceDebugDrawFlags as long
 enum
@@ -131,6 +131,6 @@ type cpSpaceDebugDrawOptions
 	data as cpDataPointer
 end type
 
-declare sub cpSpaceDebugDraw(byval space_ as cpSpace ptr, byval options as cpSpaceDebugDrawOptions ptr)
+declare sub cpSpaceDebugDraw(byval space_ as cpSpace_ ptr, byval options as cpSpaceDebugDrawOptions ptr)
 
 end extern

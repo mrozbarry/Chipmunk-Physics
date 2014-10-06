@@ -66,8 +66,6 @@ declare sub cpMessage(byval condition as const zstring ptr, byval file as const 
 
 #include "chipmunk_types.bi"
 
-	
-
 ''/ @defgroup misc Misc
 
 ''/ @{
@@ -94,13 +92,16 @@ type as cpArray cpArray_
 type as cpHashSet cpHashSet_
 
 type as cpBody cpBody_
+type as cpBody cpBody
 
 type as cpShape cpShape_
+type as cpShape cpShape
 type as cpCircleShape cpCircleShape_
 type as cpSegmentShape cpSegmentShape_
 type as cpPolyShape cpPolyShape_
 
 type as cpConstraint cpConstraint_
+type as cpConstraint cpConstraint
 type as cpPinJoint cpPinJoint_
 type as cpSlideJoint cpSlideJoint_
 type as cpPivotJoint cpPivotJoint_
@@ -110,12 +111,13 @@ type as cpDampedRotarySpring cpDampedRotarySpring_
 type as cpRotaryLimitJoint cpRotaryLimitJoint_
 type as cpRatchetJoint cpRatchetJoint_
 type as cpGearJoint cpGearJoint_
-type as cpSimpleMotorJoint cpSimpleMotorJoint_
+type as cpSimpleMotorJoint cpSimpleMotorJoint
 
 type as cpCollisionHandler cpCollisionHandler_
 type as cpArbiter cpArbiter_
 
 type as cpSpace cpSpace_
+type as cpSpace cpSpace
 
 #include "cpVect.bi"
 #include "cpBB.bi"
@@ -195,9 +197,12 @@ dim as integer __count_var = cpConvexHull( __count, __verts, __verts_var, NULL, 
 #endmacro
 
 ''static inline cpVect cpClosetPointOnSegment(const cpVect p, const cpVect a, const cpVect b)
-function cpClosetPointOnSegment(byval p as cpVect const, byval a as cpVect const, byval b as cpVect const) as cpVect
+private function cpClosetPointOnSegment(byval p as const cpVect, byval a as const cpVect, byval b as const cpVect) as cpVect
   dim as cpVect delta = cpvsub(a, b)
-  dim as cpFloat t = cpfclamp01(cpvdot(delta, cpvsub(p, b))/cpvlengthsq(delta))
+  dim as cpFloat t = cpfclamp01( _
+    cpvdot( _
+      delta, _
+      cpvsub(p, b) ) / cpvlengthsq( delta ) ) '' Originally: cpvlengthsq( delta )
   return cpvadd(b, cpvmult(delta, t))
 end function
 
