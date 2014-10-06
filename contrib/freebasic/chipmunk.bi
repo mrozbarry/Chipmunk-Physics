@@ -132,7 +132,7 @@ type as cpSpace cpSpace_
 
 #include "cpSpace.bi"
 
-'' Chipmunk 6.1.2
+'' Chipmunk 7.0.0
 #define CP_VERSION_MAJOR 7
 #define CP_VERSION_MINOR 0
 #define CP_VERSION_RELEASE 0
