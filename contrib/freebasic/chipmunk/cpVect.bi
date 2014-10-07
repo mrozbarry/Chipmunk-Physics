@@ -96,9 +96,12 @@ extern "c"
 
 ''/ Returns the squared length of v. Faster than cpvlength() when you only need to compare lengths.
 '' NOTE: For some reason, fbc does not like this
-#ifndef cpvlengthsq
-#define cpvlengthsq( v )  cpvdot( v, v )
-#endif
+''#ifndef cpvlengthsq
+''#define cpvlengthsq( v )  cpvdot( v, v )
+''#endif
+private function cpvlengthsq( byval v as cpVect ) as cpFloat
+  return cpvdot( v, v )
+end function
 
 ''/ Returns the length of v.
 #ifndef cpvlength

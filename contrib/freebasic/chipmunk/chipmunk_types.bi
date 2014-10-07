@@ -52,18 +52,6 @@ type cpFloat as double
 #define M_E 2.71828182845904523536028747135266250
 #endif
 
-'' TODO: unrecognized construct:
-'' static inline cpFloat cpfmax(cpFloat a, cpFloat b){ return (a > b) ? a : b;}static inline cpFloat cpfmin(cpFloat a, cpFloat b){ return (a < b) ? a : b;}static inline cpFloat cpfabs(cpFloat f){ return (f < 0) ? -f : f;}static inline cpFloat cpfclamp(cpFloat f, cpFloat min, cpFloat max){ return cpfmin(cpfmax(f, min), max);}static inline cpFloat cpfclamp01(cpFloat f){ return cpfmax(0.0f, cpfmin(f, 1.0f));}static inline cpFloat cpflerp(cpFloat f1, cpFloat f2, cpFloat t){ return f1*(1.0f - t) + f2*t;}static inline cpFloat cpflerpconst(cpFloat f1, cpFloat f2, cpFloat d){ return f1 + cpfclamp(f2 - f1, -d, d);} typedef uintptr_t cpHashValue;
-'' ---------------------------------------------------------------------------
-'' chipmunk_types.h(124): expected a data type starting a declaration but found 'inline'
-''     static inline cpFloat cpfmax(cpFloat a, cpFloat b)
-''            ^~~~~~
-'' context as seen by fbfrog:
-''     static inline cpFloat cpfmax ( cpFloat a , cpFloat b ) { return ( a > b ) ? 
-''            ^~~~~~
-
-'' Note: This is a helper function for FreeBASIC inline functions
-
 #ifndef cpfmax
 #define cpfmax( a, b ) (iif( a < b, a, b ))
 #endif
@@ -80,9 +68,12 @@ type cpFloat as double
 #define cpfclamp( f, min, max ) ( cpfmin( cpfmax( f, min ), max ) )
 #endif
 
-#ifndef cpfclamp01
-#define cpfclamp01(f) ( cpfclamp( f, 0.0f, 1.0f ) )
-#endif
+''#ifndef cpfclamp01
+''#define cpfclamp01(f) cpfmax(0.0f, cpfmin(f, 1.0f))
+''#endif
+private function cpfclamp01( byval f as cpFloat ) as cpFloat
+	return cpfmax(0.0f, cpfmin(f, 10f))
+end function
 
 #ifndef cpflerp
 #define cpflerp(f1, f2, t) (f1 * (1.0f - t) + f2 * t)

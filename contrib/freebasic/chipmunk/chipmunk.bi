@@ -199,10 +199,7 @@ dim as integer __count_var = cpConvexHull( __count, __verts, __verts_var, NULL, 
 ''static inline cpVect cpClosetPointOnSegment(const cpVect p, const cpVect a, const cpVect b)
 private function cpClosetPointOnSegment(byval p as const cpVect, byval a as const cpVect, byval b as const cpVect) as cpVect
   dim as cpVect delta = cpvsub(a, b)
-  dim as cpFloat t = cpfclamp01( _
-    cpvdot( _
-      delta, _
-      cpvsub(p, b) ) / cpvlengthsq( delta ) ) '' Originally: cpvlengthsq( delta )
+  dim as cpFloat t = cpfclamp01( cpvdot( delta, cpvsub(p, b) ) / cpvlengthsq( delta ) )
   return cpvadd(b, cpvmult(delta, t))
 end function
 

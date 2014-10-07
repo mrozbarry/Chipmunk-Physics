@@ -9,7 +9,7 @@
 ''
 
 #include "chipmunk/chipmunk.bi"
-#inclib "chipmunk"
+'#inclib "chipmunk"
 
 #include "fbgfx.bi"
 #if __FB_LANG__ = "fb"
@@ -81,18 +81,18 @@ function main( byval argc as integer, byval argv as zstring ptr ptr ) as integer
 	ground(2) = cpSegmentShapeNew( instance->staticBody, cpv( 790, 590 ), cpv( 10, 590 ), 1 )
 	ground(3) = cpSegmentShapeNew( instance->staticBody, cpv( 10, 590 ), cpv( 10, 10 ), 1 )
 	for i = 0 to 3
-		ground(i)->e = 1.0
-		ground(i)->u = 10.0
-		ground(i)->layers = NOT_GRABABLE_MASK
-		cpSpaceAddStaticShape( instance->space, ground( i ) )
+		cpShapeSetElasticity( ground(i), 1.0 )
+		cpShapeSetFriction( ground(i), 10.0 )
+		''cpShapeSetFilter( ground(i), NOT_GRABABLE_MASK )
+		cpSpaceAddShape( instance->space, ground( i ) )
 	next i
 	
 	dim as cpShape ptr Sbox
 	dim verts(0 to 3) as cpVect = { cpv( 0, 10 ), cpv( 600, 10 ), cpv( 600, 0 ), cpv( 200, 0 ) }
-	Sbox = cpPolyShapeNew( instance->staticBody, 4, @verts(0), cpv( 100, 200 ) )
-	Sbox->e = 0.5
-	Sbox->u = 5.0
-	Sbox->layers = NOT_GRABABLE_MASK
+	Sbox = cpPolyShapeNewRaw( instance->staticBody, 4, @verts(0), 1.0 )
+	cpShapeSetElasticity( Sbox, 0.5 )
+	cpShapeSetFriction( Sbox, 5.0 )
+	''cpShapeSetFilter( Sbox, NOT_GRABABLE_MASK )
 	cpSpaceAddShape( instance->space, Sbox )
 	
 	dim nball as integer = 50
@@ -103,12 +103,13 @@ function main( byval argc as integer, byval argv as zstring ptr ptr ) as integer
 	
 	for i = 0 to nball - 1
 		ballb(i) = cpBodyNew( mass, cpMomentForCircle( mass, 0.0, radius, cpvzero ) )
-		ballb(i)->p = cpv( int(rnd * 700)+50, int(rnd * 450)+ 50 )
+		dim as cpVect p = cpv( int(rnd * 700)+50, int(rnd * 450)+ 50 )
+		cpBodySetPosition( ballb(i), p )
 		cpSpaceAddBody( instance->space, ballb(i) )
 		
 		balls(i) = cpCircleShapeNew( ballb(i), radius, cpvzero )
-		balls(i)->e = 1.0
-		balls(i)->u = 1.0
+		cpShapeSetElasticity( balls(i), 1.0 )
+		cpShapeSetFriction( balls(i), 1.0 )
 		cpSpaceAddShape( instance->space, balls(i) )
 	next i
 	
